@@ -154,15 +154,24 @@ export const pendingNextLabel = (t) => stageName(Math.ceil(t.ko.pending.count / 
 /** האם מותר להזין / לשנות תוצאה למשחק הזה */
 export function canEdit(t, m) {
   if (t.championId) return false;
-  if (m.phase === 'stage') {
-    if (!isStageActive(t)) return false;
-    if (t.stage.type === 'swiss') return m.round === currentSwissRound(t);
-    return true;
-  }
   if (m.phase === 'decider') return true;
   if (t.ko.pending) return false;
-  const last = t.ko.rounds[t.ko.rounds.length - 1];
-  return !!last && last.matchIds.includes(m.id);
+  const matchesDone = (ids) => ids.some((id) => isDone(matchById(t, id)));
+  const rounds = t.ko.rounds;
+
+  if (m.phase === 'ko') {
+    const last = rounds.length - 1;
+    const idx = rounds.findIndex((r) => r.matchIds.includes(m.id));
+    return idx === last || (idx === last - 1 && !matchesDone(rounds[last].matchIds));
+  }
+
+  // שלב ראשון: פתוח עד שמוזנת תוצאה ראשונה בשלב שאחריו
+  if (rounds.length > 1 || (rounds.length === 1 && matchesDone(rounds[0].matchIds))) return false;
+  if (t.stage.type !== 'swiss') return true;
+  const cur = currentSwissRound(t);
+  if (m.round === cur) return true;
+  return rounds.length === 0 && m.round === cur - 1
+    && !stageMatches(t).some((x) => x.round === cur && isDone(x));
 }
 
 /* ------------------------------------------------------------------ */
@@ -181,9 +190,17 @@ export function setScore(t, matchId, ga, gb, extra = {}) {
   const valid = (x) => Number.isInteger(x) && x >= 0 && x <= 99;
   if (!valid(ga) || !valid(gb)) return 'ERR_SCORE';
 
+  // תיקון משחק שכבר נקבע על בסיסו המשך: אם ההמשך משתנה, בונים אותו מחדש
+  const next = builtOn(t, m);
+  const before = next?.key();
+  const settle = () => {
+    if (next && next.key() !== before) next.undo();
+    advance(t);
+  };
+
   if (m.phase === 'stage' || ga !== gb) {
     Object.assign(m, { ga, gb, pa: null, pb: null, golden: null });
-    advance(t);
+    settle();
     return null;
   }
 
@@ -195,7 +212,7 @@ export function setScore(t, matchId, ga, gb, extra = {}) {
       gb: gb + (extra.golden === 'b' ? 1 : 0),
       pa: null, pb: null, golden: extra.golden,
     });
-    advance(t);
+    settle();
     return null;
   }
 
@@ -204,11 +221,70 @@ export function setScore(t, matchId, ga, gb, extra = {}) {
   if (!valid(pa) || !valid(pb)) return 'ERR_PENS';
   if (pa === pb) return 'ERR_PENS_EQUAL';
   Object.assign(m, { ga, gb, pa, pb, golden: null });
-  advance(t);
+  settle();
   return null;
 }
 
 export const tiebreakLabel = (t) => tr(t.tiebreak === 'golden' ? 'tieGolden' : 'tiePenalties');
+
+/** מחיקת תוצאה: המשחק חוזר להיות פתוח, ומשחק מכריע שנקבע על בסיסה מתבטל */
+export function clearScore(t, matchId) {
+  const m = matchById(t, matchId);
+  if (!m || !isDone(m) || !canEdit(t, m)) return false;
+  const next = builtOn(t, m);
+  Object.assign(m, { ga: null, gb: null, pa: null, pb: null, golden: null });
+  next?.undo();
+  return true;
+}
+
+/**
+ * מה נבנה על בסיס תוצאות השלב של המשחק הזה (משחק מכריע / סיבוב נוקאאוט / סבב שוויצרי).
+ * key – ממה נקבע ההמשך, undo – ביטול שלו. null אם עוד לא נבנה המשך.
+ */
+function builtOn(t, m) {
+  const rounds = t.ko.rounds;
+  if (m.phase === 'ko') {
+    const idx = rounds.findIndex((r) => r.matchIds.includes(m.id));
+    if (idx === rounds.length - 1) return null;
+    return { key: () => rounds[idx].matchIds.map((id) => winnerOf(matchById(t, id))).join(), undo: () => undoKoRound(t) };
+  }
+  if (m.phase !== 'stage') return null;
+  if (t.deciderId) {
+    return {
+      key: () => { const o = leagueOutcome(t); return [o.needDecider, o.first.id, o.second.id].join(); },
+      undo: () => dropMatches(t, [t.deciderId], () => { t.deciderId = null; }),
+    };
+  }
+  if (rounds.length) return { key: () => stageEntrants(t).join(), undo: () => undoKoRound(t) };
+  if (t.stage.type === 'swiss' && m.round < currentSwissRound(t)) {
+    return { key: () => stageTable(t).map((r) => r.id).join(), undo: () => undoSwissRound(t) };
+  }
+  return null;
+}
+
+function dropMatches(t, ids, then) {
+  t.matches = t.matches.filter((m) => !ids.includes(m.id));
+  then?.();
+}
+
+function undoKoRound(t) {
+  const round = t.ko.rounds.pop();
+  dropMatches(t, round.matchIds);
+  if (round.bye) t.ko.drawn.splice(t.ko.drawn.lastIndexOf(round.bye), 1);
+}
+
+function undoSwissRound(t) {
+  const round = t.stage.rounds.pop();
+  dropMatches(t, stageMatches(t).filter((m) => m.round === round.index).map((m) => m.id));
+  round.byes.forEach(({ id }) => { t.stage.swissByes[id] -= 1; });
+}
+
+/** מי עולה מהשלב הראשון לנוקאאוט, לפי סדר השיבוץ */
+function stageEntrants(t) {
+  if (t.stage.type === 'groups') return groupEntrants(t);
+  const top = stageTable(t).slice(0, 4).map((r) => r.id);
+  return [top[0], top[3], top[1], top[2]];
+}
 
 /** בודק אם שלב הסתיים ומתקדם לשלב הבא */
 export function advance(t) {
@@ -230,12 +306,11 @@ export function advance(t) {
       return;
     }
     if (t.stage.type === 'swiss') {
-      const top = stageTable(t).slice(0, 4).map((r) => r.id);
-      startKnockout(t, [top[0], top[3], top[1], top[2]]);
+      startKnockout(t, stageEntrants(t));
       return;
     }
     if (t.stage.type === 'groups') {
-      startKnockout(t, groupEntrants(t));
+      startKnockout(t, stageEntrants(t));
       return;
     }
     if (t.stage.type === 'league') {

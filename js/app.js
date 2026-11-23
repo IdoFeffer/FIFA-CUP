@@ -1,7 +1,7 @@
 // נקודת כניסה: ניווט בין מסכים, חיבור אירועים, אנימציית ההגרלה.
 
 import { state, save, resetTournament } from './state.js';
-import { createTournament, setScore, resolveDraw, koStarted, playerName, matchById, NEEDS_TIEBREAK } from './engine.js';
+import { createTournament, setScore, clearScore, resolveDraw, koStarted, playerName, matchById, NEEDS_TIEBREAK } from './engine.js';
 import { regularScore, penaltiesText } from './standings.js';
 import { randomInt } from './draw.js';
 import { t as tr, setLang } from './i18n.js';
@@ -81,7 +81,11 @@ const scoreInput = (matchId, side, kind = '') =>
 function submitScore(matchId, extra = {}) {
   const a = scoreInput(matchId, 'a');
   const b = scoreInput(matchId, 'b');
-  if (!a || !b || a.value === '' || b.value === '') return;
+  if (!a || !b) return;
+  if (a.value === '' || b.value === '') {
+    if (clearScore(state.tournament, matchId)) afterClear(matchId, a.value, b.value);
+    return;
+  }
   const pa = scoreInput(matchId, 'a', 'pen');
   const pb = scoreInput(matchId, 'b', 'pen');
   const penA = pa && pa.value !== '' ? Number(pa.value) : null;
@@ -111,6 +115,23 @@ function submitScore(matchId, extra = {}) {
   setTimeout(() => {
     render();
     if (state.tournament?.championId) window.scrollTo(0, 0);
+  }, 0);
+}
+
+/** אחרי מחיקת תוצאה: מעדכנים הכול, ומשאירים את מה שעדיין כתוב בתיבות */
+function afterClear(matchId, valueA, valueB) {
+  ui.error = null;
+  ui.editing = null;
+  ui.tie = null;
+  save();
+  setTimeout(() => {
+    render();
+    const a = scoreInput(matchId, 'a');
+    const b = scoreInput(matchId, 'b');
+    if (a) a.value = valueA;
+    if (b) b.value = valueB;
+    // מסמנים את התוכן, כדי שהקלדה תחליף אותו ולא תתווסף אליו
+    if (document.activeElement?.matches('input[data-match]')) document.activeElement.select();
   }, 0);
 }
 

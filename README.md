@@ -38,7 +38,7 @@ Then open the address it prints (e.g. `http://localhost:8000`).
 4. **Champion** – trophy, final score, the champion's stats, the biggest win and the craziest match of the night.
 
 **Tips:**
-- Wrong score? Tap the number and fix it (allowed until the stage closes).
+- Wrong score? Tap the number and fix it (allowed until a result is entered in the next stage; deleting a score reopens the match).
 - `Enter` in the first box jumps to the second; in the second it saves.
 - The tournament is saved in the browser — refreshing the page loses nothing.
 - The circular-arrow button at the top starts a new tournament (tap twice to confirm). Player names are kept.
