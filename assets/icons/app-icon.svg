@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1024" height="1024" viewBox="0 0 160 160">
+  <defs>
+    <clipPath id="ball"><circle r="50"/></clipPath>
+    <g id="patch"><path d="M0-34L12-41L10-54H-10L-12-41Z" fill="#0A0F1A"/><path d="M0-18V-34M12-41L35.3-24.1" fill="none" stroke="#0A0F1A" stroke-width="4"/></g>
+  </defs>
+  <rect width="160" height="160" fill="#15803D"/>
+  <path d="M0 0H32V160H0zM64 0H96V160H64zM128 0H160V160H128z" fill="#1A9248"/>
+  <g transform="translate(80 98) scale(.94)">
+    <circle r="50" fill="#FFFFFF"/>
+    <g clip-path="url(#ball)">
+      <path d="M0-18L17.1-5.6L10.6 14.6H-10.6L-17.1-5.6Z" fill="#0A0F1A" stroke="#0A0F1A" stroke-width="3" stroke-linejoin="round"/>
+      <use xlink:href="#patch"/><use xlink:href="#patch" transform="rotate(72)"/><use xlink:href="#patch" transform="rotate(144)"/><use xlink:href="#patch" transform="rotate(216)"/><use xlink:href="#patch" transform="rotate(288)"/>
+    </g>
+  </g>
+  <path d="M44 62L36 22L62 38L80 14L98 38L124 22L116 62Q80 48 44 62Z" fill="#FFC81F" stroke="#0A0F1A" stroke-width="4" stroke-linejoin="round"/>
+</svg>
