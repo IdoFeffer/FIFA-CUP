@@ -1,0 +1,533 @@
+/* פריסה ייחודית לכל מסך */
+
+.app {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--color-bg);
+}
+
+.screen {
+  width: 100%;
+  max-width: var(--screen-max-width);
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: var(--screen-padding-y) var(--screen-padding-x) var(--space-14);
+  padding-bottom: calc(var(--space-14) + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-9);
+  background: var(--color-bg);
+}
+
+/* ---------- 1. הגדרה ---------- */
+
+.screen--setup { gap: var(--space-12); }
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding-top: var(--space-5);
+}
+
+.hero__trophy {
+  color: var(--color-next);
+  font-size: var(--text-2xl);
+}
+
+.hero__trophy .icon { width: 2em; height: 2em; }
+
+.hero__title { line-height: 1.2; }
+
+.players {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.player-field {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: var(--row-md);
+  padding-inline: var(--space-4) var(--space-1);
+  background: var(--color-surface);
+  border: var(--border-thin) solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.player-field:focus-within { border-color: var(--color-next); }
+
+.player-field__num {
+  width: 1.375rem;
+  flex: none;
+  text-align: center;
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  color: var(--color-text-faint);
+}
+
+.player-field__input {
+  flex: 1;
+  min-width: 0;
+  height: var(--touch-min);
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: var(--color-text);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-medium);
+}
+
+.player-field__input::placeholder { color: var(--color-text-faint); }
+.player-field__input:focus-visible { outline: none; }
+
+.player-field .icon-btn { min-width: 2.25rem; height: 2.25rem; }
+
+.formats {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.format {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  width: 100%;
+  min-height: 4.75rem;
+  padding: var(--space-6) var(--space-7);
+  background: var(--color-surface);
+  border: var(--border-base) solid var(--color-border);
+  border-radius: var(--radius-xl);
+  text-align: start;
+  transition: border-color var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out);
+}
+
+.format.is-selected {
+  background: var(--color-surface-active);
+  border-color: var(--color-next);
+}
+
+.format__radio {
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: var(--border-thick) solid var(--color-border-strong);
+  border-radius: var(--radius-round);
+}
+
+.format.is-selected .format__radio { border: 0.375rem solid var(--color-next); }
+
+.format__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.format__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  color: var(--color-text-strong);
+}
+
+.format__desc {
+  font-size: var(--text-sm);
+  line-height: var(--leading-base);
+  color: var(--color-text-muted);
+}
+
+.format__games {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.125rem;
+  font-size: var(--text-xl);
+  font-weight: var(--weight-bold);
+}
+
+.format__games-label {
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-regular);
+  color: var(--color-text-muted);
+}
+
+.setup-footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  margin-top: auto;
+}
+
+.summary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  min-height: 3.5rem;
+  background: var(--color-surface-sunken);
+  border: var(--border-thin) solid var(--color-border);
+  border-radius: var(--radius-xl);
+  font-size: var(--text-base);
+  color: var(--color-text-soft);
+}
+
+.summary .digits.strong { color: var(--color-text-strong); }
+.summary__dot { color: var(--color-border-strong); }
+
+/* ---------- 2. מסך שלב ---------- */
+
+.stage-layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-9);
+}
+
+.stage-layout__tables,
+.stage-layout__matches {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-9);
+  min-width: 0;
+}
+
+.round {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.round + .round { margin-top: var(--space-4); }
+
+.round__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+}
+
+.round__title {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  font-size: var(--text-base);
+  font-weight: var(--weight-bold);
+  color: var(--color-text-soft);
+}
+
+.round__sub {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-regular);
+  color: var(--color-text-subtle);
+}
+
+.round__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.round__group {
+  width: 1.375rem;
+  flex: none;
+  text-align: center;
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  color: var(--color-text-subtle);
+}
+
+.round__match { flex: 1; min-width: 0; }
+
+.decider__rule {
+  font-size: var(--text-sm);
+  line-height: var(--leading-loose);
+  color: var(--color-text-subtle);
+}
+
+/* טאבלט / מסך על השולחן: טבלאות בצד אחד, משחקים בצד השני */
+@media (min-width: 48em) {
+  .screen--stage,
+  .screen--ko {
+    max-width: var(--screen-max-width-wide);
+    padding-inline: var(--space-14);
+  }
+
+  .stage-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    align-items: start;
+    gap: var(--space-14);
+  }
+
+  .stage-layout__tables {
+    position: sticky;
+    top: var(--space-9);
+  }
+
+  .screen--ko .bracket {
+    max-width: 36rem;
+    width: 100%;
+    margin-inline: auto;
+  }
+}
+
+/* ---------- 3. נוקאאוט ---------- */
+
+.bracket {
+  display: flex;
+  flex-direction: column;
+}
+
+.ko-round {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.ko-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: var(--space-5);
+}
+
+.ko-grid--single {
+  grid-template-columns: minmax(0, 17rem);
+  justify-content: center;
+}
+
+.ko-round--future .section__title { color: var(--color-text-muted); }
+
+/* ---------- 4. הגרלה ---------- */
+
+.screen--draw { gap: var(--space-10); }
+.screen--draw :focus-visible { outline-color: var(--color-luck-light); }
+
+.draw-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding-top: var(--space-3);
+  text-align: center;
+}
+
+.draw-hero__icon {
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: var(--radius-2xl);
+  background: var(--color-luck-tint-strong);
+  color: var(--color-luck);
+  font-size: var(--text-2xl);
+}
+
+.draw-hero__icon .icon { width: 1.5em; height: 1.5em; }
+
+.draw-hero__title {
+  font-size: var(--text-4xl);
+  font-weight: var(--weight-black);
+}
+
+.draw-hero__text {
+  font-size: var(--text-base);
+  line-height: var(--leading-loose);
+  color: var(--color-text-muted);
+}
+
+.draw-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.draw-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: var(--row-xl);
+  padding: 0 var(--space-8);
+  background: var(--color-surface);
+  border: var(--border-thick) solid var(--color-border);
+  border-radius: var(--radius-xl);
+  transition: opacity var(--duration-base) var(--ease-out);
+}
+
+.draw-row__name {
+  font-size: 1.1875rem;
+  font-weight: var(--weight-medium);
+  color: var(--color-text-soft);
+}
+
+.draw-row.is-on {
+  background: var(--color-luck-tint-strong);
+  border-color: var(--color-luck);
+  box-shadow: var(--glow-luck);
+}
+
+.draw-row.is-on .draw-row__name {
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-black);
+  color: var(--color-text-strong);
+}
+
+.draw-list.is-done .draw-row:not(.is-on) { opacity: 0.45; }
+
+.draw-row__tag {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  color: var(--color-luck-light);
+}
+
+.draw-result {
+  text-align: center;
+  font-size: var(--text-xl);
+  line-height: var(--leading-loose);
+}
+
+.draw-result strong { font-weight: var(--weight-black); color: var(--color-luck-light); }
+.draw-result span { font-size: var(--text-md); color: var(--color-text-muted); }
+
+.draw-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-top: auto;
+}
+
+.draw-actions__note {
+  text-align: center;
+  font-size: var(--text-sm);
+  color: var(--color-text-subtle);
+}
+
+/* ---------- 5. אלוף ---------- */
+
+.champion {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding-top: var(--space-9);
+  text-align: center;
+}
+
+.champion__halo {
+  display: grid;
+  place-items: center;
+  width: var(--trophy-halo);
+  height: var(--trophy-halo);
+  margin-bottom: var(--space-10);
+  border-radius: var(--radius-round);
+  background: rgba(245, 183, 0, 0.10);
+  box-shadow: var(--glow-trophy), inset 0 0 0 var(--border-base) rgba(245, 183, 0, 0.4);
+  color: var(--color-next);
+}
+
+.champion__halo .icon {
+  width: var(--trophy-hero);
+  height: var(--trophy-hero);
+}
+
+.champion__kicker {
+  font-family: var(--font-digits);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-next);
+}
+
+.champion__name {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  font-size: var(--text-hero);
+  line-height: var(--leading-tight);
+  font-weight: var(--weight-black);
+  color: var(--color-text-strong);
+  text-shadow: 0 0 1.5rem rgba(245, 183, 0, 0.45);
+}
+
+.champion__note {
+  text-align: center;
+  font-size: var(--text-md);
+  color: var(--color-text-muted);
+}
+
+.stat-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.stat-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.125rem;
+  padding: var(--space-5) var(--space-2);
+  background: var(--color-surface);
+  border: var(--border-thin) solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.stat-tile__value {
+  font-family: var(--font-digits);
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-black);
+  color: var(--color-next);
+}
+
+.stat-tile__label {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.highlight {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  background: var(--color-surface);
+  border: var(--border-thin) solid var(--color-border);
+  border-radius: var(--radius-xl);
+}
+
+.highlight__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.highlight__title {
+  font-size: var(--text-md);
+  font-weight: var(--weight-bold);
+}
+
+.highlight__meta {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.champion__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-top: auto;
+}
+
+.toast {
+  min-height: 1.25rem;
+  text-align: center;
+  font-size: var(--text-sm);
+  color: var(--color-done-text);
+}

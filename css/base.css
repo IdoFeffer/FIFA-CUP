@@ -1,0 +1,114 @@
+/* reset, body, טיפוגרפיה בסיסית, focus, RTL */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  /* כיוון הפס הצבעוני בטבלה: מינוס = צד ימין (עברית), פלוס = צד שמאל (אנגלית) */
+  --dir-sign: -1;
+  font-size: 100%;
+  -webkit-text-size-adjust: 100%;
+  background: var(--color-page);
+}
+
+html[dir="ltr"] {
+  --dir-sign: 1;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--color-page);
+  color: var(--color-text);
+  font-family: var(--font-text);
+  font-size: var(--text-lg);
+  line-height: var(--leading-base);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, p, ul {
+  margin: 0;
+}
+
+ul {
+  padding: 0;
+  list-style: none;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+strong {
+  font-weight: var(--weight-bold);
+  color: var(--color-text-strong);
+}
+
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.icon {
+  width: 1.25em;
+  height: 1.25em;
+  flex: none;
+  display: block;
+}
+
+.digits {
+  font-family: var(--font-digits);
+  font-variant-numeric: tabular-nums;
+}
+
+.digits.strong {
+  color: var(--color-text);
+  font-weight: var(--weight-bold);
+}
+
+.tone-home { color: var(--color-home-light); }
+.tone-away { color: var(--color-away-light); }
+.tone-done { color: var(--color-done); }
+.tone-next { color: var(--color-next); }
+
+.sr-only {
+  position: absolute;
+  width: 0.0625rem;
+  height: 0.0625rem;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.noscript {
+  padding: var(--space-9);
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0ms !important;
+    animation-duration: 0ms !important;
+  }
+}

@@ -1,0 +1,36 @@
+# מערכת הפעלה
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# עורכים
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Node (אם יתווספו כלים בעתיד)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json.bak
+
+# build / deploy
+dist/
+build/
+.cache/
+.netlify/
+.vercel/
+
+# משתני סביבה
+.env
+.env.*
+!.env.example
+
+# לוגים וקבצים זמניים
+*.log
+tmp/
+.tmp/
