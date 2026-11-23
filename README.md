@@ -40,7 +40,7 @@ Then open the address it prints (e.g. `http://localhost:8000`).
 **Tips:**
 - Wrong score? Tap the number and fix it (allowed until a result is entered in the next stage; deleting a score reopens the match).
 - `Enter` in the first box jumps to the second; in the second it saves.
-- The tournament is saved in the browser — refreshing the page loses nothing.
+- The tournament is saved in the browser — refreshing the page loses nothing. Opening the link again asks whether to continue or start a new one.
 - The circular-arrow button at the top starts a new tournament (tap twice to confirm). Player names are kept.
 - **עב / EN** at the top switches language at any time, even mid-tournament.
 
@@ -100,6 +100,7 @@ FIFA CUP/
 │   ├── stats.js            ← champion screen stats
 │   └── ui/
 │       ├── setup.js        ← setup screen
+│       ├── resume.js       ← continue / new tournament screen
 │       ├── stage.js        ← league / groups / Swiss screen
 │       ├── bracket.js      ← knockout bracket
 │       ├── drawScreen.js   ← draw screen

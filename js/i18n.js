@@ -73,6 +73,13 @@ const STRINGS = {
     summaryTie: 'תיקו:',
     start: 'הגרל',
 
+    // מסך פתיחה
+    resumeTitle: 'יש טורניר שמור. להמשיך?',
+    resumeContinue: 'המשך טורניר',
+    resumeResults: 'הצג תוצאות',
+    resumeChampion: (p) => `האלוף: ${p.name}`,
+    resumeNote: 'טורניר חדש מוחק את התוצאות. שמות השחקנים נשמרים.',
+
     // כותרת וטאבים
     newTournament: 'טורניר חדש',
     confirmNew: 'לחץ שוב כדי להתחיל טורניר חדש',
@@ -246,6 +253,12 @@ const STRINGS = {
     summaryGames: 'matches',
     summaryTie: 'Ties:',
     start: 'Draw',
+
+    resumeTitle: 'You have a saved tournament. Continue?',
+    resumeContinue: 'Continue tournament',
+    resumeResults: 'Show results',
+    resumeChampion: (p) => `Champion: ${p.name}`,
+    resumeNote: 'A new tournament deletes the results. Player names are kept.',
 
     newTournament: 'New tournament',
     confirmNew: 'Tap again to start a new tournament',

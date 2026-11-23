@@ -531,3 +531,22 @@
   font-size: var(--text-sm);
   color: var(--color-done-text);
 }
+
+/* ---------- מסך פתיחה: להמשיך או להתחיל חדש ---------- */
+
+.resume {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  width: 100%;
+  max-width: var(--screen-max-width);
+  margin: var(--space-9) auto 0;
+  text-align: center;
+}
+
+.resume .section__title { display: block; text-align: center; }
+
+.resume__meta {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}

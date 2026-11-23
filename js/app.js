@@ -8,6 +8,7 @@ import { t as tr, setLang } from './i18n.js';
 import { MIN_PLAYERS } from './formats.js';
 import { finalMatch } from './stats.js';
 import { renderSetup, pickedFormat } from './ui/setup.js';
+import { renderResume } from './ui/resume.js';
 import { renderStage } from './ui/stage.js';
 import { renderBracket } from './ui/bracket.js';
 import { renderDraw } from './ui/drawScreen.js';
@@ -15,6 +16,8 @@ import { renderChampion } from './ui/champion.js';
 
 const root = document.getElementById('app');
 const ui = { confirmReset: false, error: null, editing: null, tie: null, drawWinner: null, spinning: false, toast: '' };
+// כניסה מחדש עם טורניר שמור: שואלים אם להמשיך. רענון של הדף ממשיך ישר
+ui.resume = !!state.tournament && performance.getEntriesByType('navigation')[0]?.type !== 'reload';
 const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ---------- ניתוב ---------- */
@@ -22,6 +25,7 @@ const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)'
 function currentScreen() {
   const t = state.tournament;
   if (!t) return 'setup';
+  if (ui.resume) return 'resume';
   if (t.championId) return 'champion';
   if (t.ko.pending) return 'draw';
   if (!t.stage) return 'ko';
@@ -39,6 +43,7 @@ function render({ keepFocus = true } = {}) {
   const t = state.tournament;
   const html = {
     setup: () => renderSetup(state.setup),
+    resume: () => renderResume(t, ui),
     stage: () => renderStage(t, ui, 'stage'),
     ko: () => renderBracket(t, ui, 'ko'),
     draw: () => renderDraw(t, ui),
@@ -270,8 +275,16 @@ root.addEventListener('click', (e) => {
       scoreInput(el.dataset.match, 'a')?.focus();
       break;
     }
+    case 'resume':
+      clearTimeout(resetTimer);
+      ui.confirmReset = false;
+      ui.resume = false;
+      render({ keepFocus: false });
+      window.scrollTo(0, 0);
+      break;
     case 'reset':
       if (ui.confirmReset) {
+        ui.resume = false;
         clearTimeout(resetTimer);
         ui.confirmReset = false;
         ui.tie = null;
