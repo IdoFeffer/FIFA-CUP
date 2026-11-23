@@ -50,7 +50,7 @@ Then open the address it prints (e.g. `http://localhost:8000`).
 
 | Format | Available when | How it works |
 |---|---|---|
-| **League** | always | Everyone plays everyone. 1st place wins. A decider only if it's close (see below) |
+| **League** | always | Everyone plays everyone. 1st place wins. A decider only if it's a tie (see below) |
 | **Group stage** | 6+ players | Groups of about 4. Qualifiers go on to the semi-finals or quarter-finals |
 | **Knockout** | always | Lose and you're out. In a stage with an odd number of players, a draw sends one player straight through |
 | **Swiss system** | 6+ players | Several rounds against players on similar points, no rematches. Top 4 reach the semi-finals |
@@ -65,7 +65,7 @@ Then open the address it prints (e.g. `http://localhost:8000`).
 - **Tie-breakers:** points → goal difference → goals scored → head-to-head → random draw.
 - **Odd number in a league / groups:** one player rests each matchday, and everyone rests exactly once.
 - **Odd number in Swiss:** the lowest-ranked player who hasn't rested yet rests, and gets 3 points.
-- **League decider:** only if 1st and 2nd finish level on points with a goal difference within one goal of each other. Otherwise 1st place is champion.
+- **League decider:** only if 1st and 2nd finish level on both points and goal difference. Otherwise 1st place is champion.
 - **Knockout ties:** chosen at the start of the tournament; applies to every knockout match and to the league decider:
   - **Penalties** – the score stays (e.g. 2:2) and you also enter the penalties. Penalties don't count as goals or in the stats, and they need a winner too.
   - **Golden goal** – pick who scored first in extra time. The goal is added to the score (2:2 becomes 3:2) and counts in the stats.

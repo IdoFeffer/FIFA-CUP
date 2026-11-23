@@ -131,7 +131,7 @@ function bestOf(rows, t) {
 export function leagueOutcome(t) {
   const table = stageTable(t);
   const [first, second] = table;
-  const needDecider = !!second && first.pts === second.pts && Math.abs(first.gd - second.gd) <= 1;
+  const needDecider = !!second && first.pts === second.pts && first.gd === second.gd;
   return { table, first, second, needDecider };
 }
 
